@@ -14,7 +14,7 @@
 # Import necessary modules for the testing section.
 from motor_driver import MotorDriver
 from encoder_reader import encoder
-import utime, pyb
+import utime, pyb, math
 
 class CLController:
     """!@brief      Implements a controller class to be used in lab.
@@ -24,29 +24,36 @@ class CLController:
                     and setting gains and setpoints for the controller's calculations.
     """
     
-    def __init__(self, Kp, Setpoint):
+    def __init__(self, Kp, Kd, PosSet, VelSet):
         """!@brief             Initializes a controller object.
             @details           Creates a controller object with a specified initial
                                gain and setpoint, though these can be changed 
                                through various methods.
             @param   Kp        The controller's proportional gain.
-            @param   Setpoint  The controller's setpoint.
+            @param   Kd        The controller's derivative gain. 
+            @param   PosSet    The controller's positional setpoint.
+            @param   VelSet    The controller's velocity setpoint.
         """   
         ## The controller's proportional gain, to be used in closed loop control.
         self.Kp = Kp
-        ## The controller's setpoint, which it tries to reach in closed loop control.
-        self.Setpoint = Setpoint
+        ## The controller's derivative gain, to be used in closed loop control.
+        self.Kd = Kd
+        ## The controller's positional setpoint, which it tries to reach in closed loop control.
+        self.PosSet = PosSet
+        ## The controller's velocity setpoint, which it tries to reach in closed loop control.
+        self.VelSet = VelSet
     
-    def run(self, Actual):
+    def run(self, ActPos, ActVel):
         """!@brief		    Calculates the actuation signal based on the error of
                             the measured reading from the setpoint.
-            @param  Actual  The actual, measured reading from a device.
+            @param  ActPos  The actual, measured position reading from a device
+            @param  ActOme  The actual, measured velocity reading from a device
             @return         The actuation signal necessary to drive the measured
                             signal towards the setpoint.
         """
         ## The actuation signal necessary to drive the measured signal towards the
-        #  setpoint.
-        Actuation = self.Kp * (self.Setpoint - Actual)
+        #  setpoints.
+        Actuation = self.Kp * (self.PosSet - ActPos) + self.Kd * (self.VelSet - ActVel)
         return Actuation
     
     def set_Kp(self, Kp):
@@ -54,30 +61,42 @@ class CLController:
             @param  Kp  The controller's proportional gain.
         """
         self.Kp = Kp
-    
-    def set_Setpoint(self, Setpoint):
-        """!@brief		      Sets the controller's setpoint value.
-            @param  Setpoint  The controller's setpoint.
+        
+    def set_Kd(self, Kd):
+        """!@brief		Sets the controller's derivative gain value.
+            @param  Kd  The controller's derivative gain.
         """
-        self.Setpoint = Setpoint
+    
+    def set_Pos(self, PosSet):
+        """!@brief		      Sets the controller's positional setpoint value.
+            @param  Setpoint  The controller's positional setpoint.
+        """
+        self.PosSet = PosSet
+        
+    def set_Vel(self, VelSet):
+        """!@brief		      Sets the controller's positional setpoint value.
+            @param  VelSet    The controller's velocity setpoint.
+        """
+        self.PosSet = VelSet        
         
 if __name__ == "__main__":
     # Set up motor, encoder, and controller objects
     my_motor = MotorDriver(pyb.Pin.board.PA10, pyb.Pin.board.PB4, pyb.Pin.board.PB5, 3)
-    my_encoder = encoder(pyb.Pin.board.PC6, pyb.Pin.board.PC7, 8)
-    my_controller = CLController(.2, 5000)
+    my_encoder = encoder(pyb.Pin.board.PB6, pyb.Pin.board.PB7, 4)
+    my_controller = CLController(5, .2, math.pi*16*2.5, 0)
     
     # Zero the encoder
     my_encoder.zero()
-    print(my_encoder.read_encoder())
+    print(my_encoder.read_Posrad())
     
     # Use the controller to set the motor's duty cycle to try and reach the setpoint
     # over 5 seconds.
     for idx in range(500):
-        my_motor.set_duty_cycle(my_controller.run(my_encoder.read_encoder()))
+        my_encoder.read_encoder()
+        my_motor.set_duty_cycle(my_controller.run(my_encoder.read_Posrad(),my_encoder.read_Velrad()))
         utime.sleep_ms(10)
     print('done')
     
     # Check the encoder's final position reading and turn off the motor.
-    print(my_encoder.read_encoder())
+    print(my_encoder.read_Posrad())
     my_motor.set_duty_cycle(0)

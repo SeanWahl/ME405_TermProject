@@ -9,7 +9,7 @@
 @date       January 31, 2023
 """
 
-import time, pyb
+import time, pyb, math
 
 class encoder:
     """!@brief       Implements an encoder class to be used in lab.
@@ -41,6 +41,9 @@ class encoder:
         ## The previous timer count value.
         self.prev = 0
         
+        self.timelist = [0]*5
+        self.poslist = [0]*5
+        
     def read_encoder(self):
         """!@brief          Retrieves the overall position of the encoder.
             @return         The total position of the encoder in ticks.
@@ -58,9 +61,33 @@ class encoder:
         else:
             self.count -= self.delta
             
+        self.poslist.pop(0)
+        self.poslist.append(self.count)
+        self.timelist.pop(0)
+        self.timelist.append(time.ticks_us())
+        
         self.prev = self.current
         return self.count
         
+    def read_Posrad(self):
+        """!@brief          Retrieves the overall position of the encoder in radians.
+            @return         The total position of the encoder in radians.
+        """
+        return self.read_encoder()*2*math.pi/(256*4)
+    
+    def read_omega(self):
+        """!@brief          Retrieves the rotational velocity of the encoder.
+            @return         The rotational velocity of the encoder in ticks/second.
+        """
+        omega = (self.poslist[0]-self.poslist[4])/(time.ticks_diff(self.timelist[0], self.timelist[4])/1000000)
+        return omega
+    
+    def read_Velrad(self):
+        """!@brief		Retrieves the rotational velocity of the encoder in radians/s.
+            @return     The rotational velocity of the encoder in r/s.
+        """
+        return self.read_omega()*2*math.pi/(256*4)
+    
     def zero(self):
         """!@brief          Sets the encoder's overall position value back to zero.
         """
@@ -69,10 +96,12 @@ class encoder:
         
 if __name__ == "__main__":
     #Set up an encoder, have it read 9 times and zero on the tenth.
-    my_encoder = encoder(pyb.Pin.board.PC6, pyb.Pin.board.PC7, 8)
+    my_encoder = encoder(pyb.Pin.board.PB6, pyb.Pin.board.PB7, 4)
+    my_encoder.zero()
+    N = 16
     while True:
-        for n in range(10):
-            print(my_encoder.read_encoder())
-            if n == 9:
-                my_encoder.zero()
-            time.sleep(0.5)
+        for n in range(100):
+            my_encoder.read_encoder()
+        if n == 99:
+            print(f'pos:{my_encoder.read_Posrad()}, vel:{my_encoder.read_Velrad()}')
+        time.sleep(0.010)
