@@ -24,6 +24,7 @@ from machine import Pin, I2C
 from mlx90640 import MLX90640
 from mlx90640.calibration import NUM_ROWS, NUM_COLS, IMAGE_SIZE, TEMP_K
 from mlx90640.image import ChessPattern, InterleavedPattern
+from io import StringIO
 
 
 class MLX_Cam:
@@ -96,15 +97,20 @@ class MLX_Cam:
                  letter representing the intensity of red, green, and blue from
                  0 to 255
         """
+        
         minny = min(array)
         scale = 255.0 / (max(array) - minny)
-        for row in range(self._height):
-            for col in range(self._width):
+        for row in range(self._height): # Fill rows number of times as height 
+            for col in range(self._width): # Fill col number of times as height
                 pix = int((array[row * self._width + (self._width - col - 1)]
                            - minny) * scale)
+                print(pix)
                 print(f"\033[38;2;{pix};{pix};{pix}m{pixel}", end='')
             print(f"\033[38;2;{textcolor}m")
-
+            textcolorarray = []
+            textcolorarray.append(textcolor)
+        print(self._height)
+        print(self._width)
 
     ## A "standard" set of characters of different densities to make ASCII art
     asc = " -.:=+*#%@"
@@ -219,19 +225,44 @@ if __name__ == "__main__":
             begintime = time.ticks_ms()
             image = camera.get_image()
             print(f" {time.ticks_diff(time.ticks_ms(), begintime)} ms")
-
+            
             # Can show image.v_ir, image.alpha, or image.buf; image.v_ir best?
             # Display pixellated grayscale or numbers in CSV format; the CSV
             # could also be written to a file. Spreadsheets, Matlab(tm), or
             # CPython can read CSV and make a decent false-color heat plot.
             show_image = False
-            show_csv = False
+            show_csv = True
+            art = False
+            fire_decide = True
             if show_image:
                 camera.ascii_image(image.buf)
-            elif show_csv:
-                for line in camera.get_csv(image.v_ir, limits=(0, 99)):
-                    print(line)
-            else:
+            #elif show_csv:
+            #    for line in camera.get_csv(image.v_ir, limits=(0, 500)):
+            #        print(line)
+            elif fire_decide:# Firing Decider
+                for row in camera.get_csv(image.v_ir, limits=(0, 500)):
+                   row = row.split(',') #need to convert row string to list
+                   for idx in range(len(row)):
+                        row[idx] = int(row[idx])
+                   for col in row:
+                       i = 0
+                       while i <(32/2): #check first half heat
+                           avgleft = 0
+                           avgleft += col
+                           i+=1
+                       print(avgleft)
+                       avgright = 0
+                       avgright += col
+                       print(avgright)
+                if avgright>avgleft:
+                    print('Shoot right captain')
+                else:
+                    print('Shoot left captain')
+                     
+            if show_csv:
+                for line in camera.get_csv(image.v_ir, limits=(0, 500)):
+                    print(line)         
+            if art:
                 camera.ascii_art(image.v_ir)
             time.sleep_ms(10000)
 
