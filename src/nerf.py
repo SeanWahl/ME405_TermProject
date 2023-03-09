@@ -32,14 +32,18 @@ if __name__ == "__main__":
     import pyb
     
     myGun = Nerf(Pin.board.PB3, Pin.board.PC4)
-    myGun.arm()
-    pyb.delay(1000)
-    myGun.disarm()
-    myGun.shoot()
-    pyb.delay(1000)
-    myGun.arm()
-    pyb.delay(1000)
-    myGun.shoot()
-    pyb.delay(1000)
-    myGun.disarm()
     
+#     myGun.arm()
+#     pyb.delay(2000)
+#     myGun.shoot()
+#     pyb.delay(1000)
+#     myGun.disarm()
+#     myGun.disarm()
+#     myGun.shoot()
+#     pyb.delay(1000)
+#     myGun.arm()
+#     pyb.delay(1000)
+#     myGun.shoot()
+#     pyb.delay(1000)
+#     myGun.disarm()
+#     

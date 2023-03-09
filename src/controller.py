@@ -80,10 +80,15 @@ class CLController:
         self.PosSet = VelSet        
         
 if __name__ == "__main__":
-    # Set up motor, encoder, and controller objects
-    my_motor = MotorDriver(pyb.Pin.board.PA10, pyb.Pin.board.PB4, pyb.Pin.board.PB5, 3)
-    my_encoder = encoder(pyb.Pin.board.PB6, pyb.Pin.board.PB7, 4)
-    my_controller = CLController(5, .2, math.pi*16*2.5, 0)
+    # Set up base motor, encoder, and controller objects
+    #my_motor = MotorDriver(pyb.Pin.board.PA10, pyb.Pin.board.PB4, pyb.Pin.board.PB5, 3)
+    #my_encoder = encoder(pyb.Pin.board.PB6, pyb.Pin.board.PB7, 4)
+    #my_controller = CLController(20, 1.5, math.pi*16*2.5, 0)
+    
+    # Set up pitch motor, encoder, and controller etc.
+    my_motor = MotorDriver(pyb.Pin.board.PC1, pyb.Pin.board.PA0, pyb.Pin.board.PA1, 5)
+    my_encoder = encoder(pyb.Pin.board.PC6, pyb.Pin.board.PC7, 8)
+    my_controller = CLController(10, .2, math.pi*16, 0)
     
     # Zero the encoder
     my_encoder.zero()

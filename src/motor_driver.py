@@ -82,8 +82,8 @@ class MotorDriver:
         
 if __name__ == "__main__":
     # Set up a motor object and cycle through a range of duty cycles.
-    my_motor = MotorDriver(pyb.Pin.board.PA10, pyb.Pin.board.PB4, pyb.Pin.board.PB5, 3)
-    motor_percents = [0, 25, 50, 75, 100, 50, 0, -25, -50, -75, -100, -50, 0]
-    for percent in motor_percents:
-        my_motor.set_duty_cycle(percent)
-        time.sleep(1)
+    my_motor = MotorDriver(pyb.Pin.board.PC1, pyb.Pin.board.PA0, pyb.Pin.board.PA1, 5)
+    #motor_percents = [0, 25, 50, 75, 100, 50, 0, -25, -50, -75, -100, -50, 0]
+    #for percent in motor_percents:
+        #my_motor.set_duty_cycle(percent)
+        #time.sleep(1)
