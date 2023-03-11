@@ -1,5 +1,10 @@
 """!
 @file mlx_cam.py
+
+RAW VERSION
+This version uses a stripped down MLX90640 driver which produces only raw data,
+not calibrated data, in order to save memory.
+
 This file contains a wrapper that facilitates the use of a Melexis MLX90640
 thermal infrared camera for general use. The wrapper contains a class MLX_Cam
 whose use is greatly simplified in comparison to that of the base class,
@@ -19,12 +24,12 @@ example.
     version 3.
 """
 
+import gc
 import utime as time
 from machine import Pin, I2C
 from mlx90640 import MLX90640
 from mlx90640.calibration import NUM_ROWS, NUM_COLS, IMAGE_SIZE, TEMP_K
 from mlx90640.image import ChessPattern, InterleavedPattern
-from io import StringIO
 
 
 class MLX_Cam:
@@ -62,7 +67,7 @@ class MLX_Cam:
         self._camera.setup()
 
         ## A local reference to the image object within the camera driver
-        self._image = self._camera.image
+        self._image = self._camera.raw
 
 
     def ascii_image(self, array, pixel="██", textcolor="0;180;0"):
@@ -97,20 +102,15 @@ class MLX_Cam:
                  letter representing the intensity of red, green, and blue from
                  0 to 255
         """
-        
         minny = min(array)
         scale = 255.0 / (max(array) - minny)
-        for row in range(self._height): # Fill rows number of times as height 
-            for col in range(self._width): # Fill col number of times as height
+        for row in range(self._height):
+            for col in range(self._width):
                 pix = int((array[row * self._width + (self._width - col - 1)]
                            - minny) * scale)
-                print(pix)
                 print(f"\033[38;2;{pix};{pix};{pix}m{pixel}", end='')
             print(f"\033[38;2;{textcolor}m")
-            textcolorarray = []
-            textcolorarray.append(textcolor)
-        print(self._height)
-        print(self._width)
+
 
     ## A "standard" set of characters of different densities to make ASCII art
     asc = " -.:=+*#%@"
@@ -124,7 +124,7 @@ class MLX_Cam:
                  by a bad pixel in the camera. 
         @param   array The array to be shown, probably @c image.v_ir
         """
-        scale = 10 / (max(array) - min(array))
+        scale = len(MLX_Cam.asc) / (max(array) - min(array))
         offset = -min(array)
         for row in range(self._height):
             line = ""
@@ -138,6 +138,32 @@ class MLX_Cam:
                     print("><", end='')
             print('')
         return
+    
+    def get_hot_column(self, array):
+        """!
+        @brief   Show a data array from the IR image as ASCII art.
+        @details Each character is repeated twice so the image isn't squished
+                 laterally. A code of "><" indicates an error, probably caused
+                 by a bad pixel in the camera. 
+        @param   array The array to be shown, probably @c image.v_ir
+        """
+        scale = len(MLX_Cam.asc) / (max(array) - min(array))
+        offset = -min(array)
+        averages = [0] * 32
+        for row in range(12):
+            for col in range(self._width):
+                pix = int((array[row * self._width + (self._width - col - 1)]
+                           + offset) * scale)
+                averages[col] += pix
+#                 try:
+#                     the_char = MLX_Cam.asc[pix]
+#                     print(f"{the_char}{the_char}", end='')
+#                 except IndexError:
+#                     print("><", end='')
+        maxVal = max(averages)
+        maxIdx = averages.index(maxVal)
+        #print(maxIdx)
+        return maxIdx
 
 
     def get_csv(self, array, limits=None):
@@ -160,31 +186,30 @@ class MLX_Cam:
             line = ""
             for col in range(self._width):
                 pix = int((array[row * self._width + (self._width - col - 1)]
-                          * scale) + offset)
+                          + offset) * scale)
                 if col:
                     line += ","
                 line += f"{pix}"
-#             line += "\r\n"
             yield line
         return
-
 
     def get_image(self):
         """!
         @brief   Get one image from a MLX90640 camera.
         @details Grab one image from the given camera and return it. Both
                  subframes (the odd checkerboard portions of the image) are
-                 grabbed and combined. This assumes that the camera is in the
-                 ChessPattern (default) mode as it probably should be.
+                 grabbed and combined (maybe; this is the raw version, so the
+                 combination is sketchy and not fully tested). It is assumed
+                 that the camera is in the ChessPattern (default) mode as it
+                 probably should be.
         @returns A reference to the image object we've just filled with data
         """
         for subpage in (0, 1):
             while not self._camera.has_data:
-                time.sleep_ms(50)
-                print('.', end='')
-            self._camera.read_image(subpage)
-            state = self._camera.read_state()
-            image = self._camera.process_image(subpage, state)
+                #time.sleep_ms(50)
+                #print('.', end='')
+                pass
+            image = self._camera.read_image(subpage)
 
         return image
 
@@ -222,49 +247,30 @@ if __name__ == "__main__":
         try:
             # Get and image and see how long it takes to grab that image
             print("Click.", end='')
-            begintime = time.ticks_ms()
+            t_1 = time.ticks_ms()
             image = camera.get_image()
-            print(f" {time.ticks_diff(time.ticks_ms(), begintime)} ms")
-            
+
             # Can show image.v_ir, image.alpha, or image.buf; image.v_ir best?
             # Display pixellated grayscale or numbers in CSV format; the CSV
             # could also be written to a file. Spreadsheets, Matlab(tm), or
             # CPython can read CSV and make a decent false-color heat plot.
             show_image = False
             show_csv = False
-            art = True
-            fire_decide = False
+            get_hot_column = True
             if show_image:
-                camera.ascii_image(image.buf)
-            #elif show_csv:
-            #    for line in camera.get_csv(image.v_ir, limits=(0, 500)):
-            #        print(line)
-            elif fire_decide:# Firing Decider
-                for row in camera.get_csv(image.v_ir, limits=(0, 500)):
-                   row = row.split(',') #need to convert row string to list
-                   for idx in range(len(row)):
-                        row[idx] = int(row[idx])
-                   for col in row:
-                       i = 0
-                       while i <(32/2): #check first half heat
-                           avgleft = 0
-                           avgleft += col
-                           i+=1
-                       print(avgleft)
-                       avgright = 0
-                       avgright += col
-                       print(avgright)
-                if avgright>avgleft:
-                    print('Shoot right captain')
-                else:
-                    print('Shoot left captain')
-                     
-            if show_csv:
-                for line in camera.get_csv(image.v_ir, limits=(0, 500)):
-                    print(line)         
-            if art:
-                camera.ascii_art(image.v_ir)
-            time.sleep_ms(10000)
+                camera.ascii_image(image)
+            elif show_csv:
+                t_1 = time.ticks_ms()
+                for line in camera.get_csv(image, limits=(0, 99)):
+                    n = 10
+                    #print(line)
+                print(f" {time.ticks_diff(time.ticks_ms(), t_1)} ms")
+            elif get_hot_column:
+                print(camera.get_hot_column(image))
+                print(f" {time.ticks_diff(time.ticks_ms(), t_1)} ms")
+            else:
+                camera.ascii_art(image)
+            time.sleep_ms(5000)
 
         except KeyboardInterrupt:
             break
