@@ -51,10 +51,7 @@ if __name__ == "__main__":
     
     # Create the camera object and set it up in default mode
     camera = MLX_Cam(i2c_bus)
-    image = camera.get_image()
-    column = camera.get_hot_column(image)
-    angle  = (172.76 + (column - 8) * 0.8512)*math.pi/180
-    
+
     s0 = 0
     s1 = 1
     state = s0
@@ -76,6 +73,7 @@ if __name__ == "__main__":
                     image = camera.get_image()
                     column = camera.get_hot_column(image)
                     angle  = (172.76 + (column - 8) * 0.8512)*math.pi/180
+                    
                     t_rn = ticks_ms()
                     t_next_cont  = ticks_add(t_rn, cont_per)
                     t_next_cam   = ticks_add(t_rn, cam_per)
