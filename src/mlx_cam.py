@@ -155,14 +155,12 @@ class MLX_Cam:
                 pix = int((array[row * self._width + (self._width - col - 1)]
                            + offset) * scale)
                 averages[col] += pix
-#                 try:
-#                     the_char = MLX_Cam.asc[pix]
-#                     print(f"{the_char}{the_char}", end='')
-#                 except IndexError:
-#                     print("><", end='')
+        for col in range(32):
+            if col%2 == 0:
+                averages[col] += 17.5
+
         maxVal = max(averages)
         maxIdx = averages.index(maxVal)
-        #print(maxIdx)
         return maxIdx
 
 

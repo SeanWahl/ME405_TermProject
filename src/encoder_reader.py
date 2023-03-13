@@ -96,7 +96,8 @@ class encoder:
         
 if __name__ == "__main__":
     #Set up an encoder, have it read 9 times and zero on the tenth.
-    my_encoder = encoder(pyb.Pin.board.PB6, pyb.Pin.board.PB7, 4)
+    #my_encoder = encoder(pyb.Pin.board.PB6, pyb.Pin.board.PB7, 4)
+    my_encoder = encoder(pyb.Pin.board.PC6, pyb.Pin.board.PC7, 8)
     my_encoder.zero()
     N = 16
     while True:
