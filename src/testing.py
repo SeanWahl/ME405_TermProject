@@ -96,6 +96,7 @@ if __name__ == "__main__":
                     image = camera.get_image()
                     column = camera.get_hot_column(image)
                     angle  = (172.76 + (column - 8) * 0.8512)*math.pi/180
+                    # 0.812 [deg/pixels]
                     
                 # Controller code
                 if ticks_diff(ticks_ms(), t_next_cont) >= 0:
