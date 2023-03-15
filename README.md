@@ -21,7 +21,7 @@ Figure 5.1. Final Nerf Sentry Turret Design
 ## Mechanical Design
 
 The group began by mechanically designing the spinning base of the system, as seen in Figure 5.2. The system consists of a 3-D printed Internal gear, rotated by another
-3_d printed gear head press fit onto the given ME 405 motor shaft. The circular wooden base rotates upon the rectangular base via a purchased, commercially available 
+3-D printed gear head press fit onto the given ME 405 motor shaft. The circular wooden base rotates upon the rectangular base via a purchased, commercially available 
 "lazy susan." The motor is mounted using a similar system to the ME 405 motor mounts, with a through hole in a wooden block tightened to hold the motor from the compressive
 force applied thorugh the screw/wingnut components. Therefore, as the motor is spun, it rotates the entire circular wooden base which all components rest upon. 
 
