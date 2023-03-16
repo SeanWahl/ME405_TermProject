@@ -35,19 +35,19 @@ if __name__ == "__main__":
     my_motor_yaw = MotorDriver(pyb.Pin.board.PA10, pyb.Pin.board.PB4, pyb.Pin.board.PB5, 3)
     my_encoder_yaw = encoder(pyb.Pin.board.PB6, pyb.Pin.board.PB7, 4)
     my_encoder_yaw.zero()
-    my_controller_yaw = CLController(15, .5, math.pi*16*2.5, 0)
+    my_controller_yaw = CLController(60, .1, math.pi*16*2.5, 0)
     
     # Set up pitch motor, encoder, and controller objects
     my_motor_pitch = MotorDriver(pyb.Pin.board.PC1, pyb.Pin.board.PA0, pyb.Pin.board.PA1, 5)
     my_encoder_pitch = encoder(pyb.Pin.board.PC6, pyb.Pin.board.PC7, 8)
     my_encoder_pitch.zero()
-    my_controller_pitch = CLController(30, .1, 4.4, 0)
+    my_controller_pitch = CLController(30, .1, 8, 0)
     
     # Set up nerf object
     my_gun = Nerf(Pin.board.PB3, Pin.board.PC4)
     
     cont_per = 10
-    cam_per  = 4750
+    cam_per  = 5500
     shoot_per = 4500
     
     try:
@@ -128,7 +128,8 @@ if __name__ == "__main__":
                 elif charIn in {'r', 'R'}:
                     print(my_encoder.read_Posrad())
                     
-                my_encoder.read_encoder()
+                my_encoder_yaw.read_encoder()
+                my_encoder_pitch.read_encoder()
                 
         if state == s1:
             try:
