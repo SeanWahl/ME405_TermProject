@@ -123,8 +123,10 @@ if __name__ == "__main__":
                 elif charIn in {'p', 'P'}:
                     image = camera.get_image()
                     column = camera.get_hot_column(image)
+                    angle  = (172.76 + (column - 8) * 0.8512)*math.pi/180
+                    # 0.812 [deg/pixels]
                     print(column)
-                    
+                
                 elif charIn in {'r', 'R'}:
                     print(my_encoder.read_Posrad())
                     
