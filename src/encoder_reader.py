@@ -9,10 +9,11 @@
 @date       January 31, 2023
 """
 
+# Import necessary modules.
 import time, pyb, math
 
 class encoder:
-    """!@brief       Implements an encoder class to be used in lab.
+    """!@brief      Implements an encoder class to be used in lab.
        @details     An encoder class compatible with the encoders in the ME 405 lab
                     kits. Allows for functions such as reading and zeroing.
     """
@@ -41,8 +42,9 @@ class encoder:
         ## The previous timer count value.
         self.prev = 0
         
-        self.timelist = [0]*5
-        self.poslist = [0]*5
+        # Time and position lists for velocity calculation.
+        self._timelist = [0]*5
+        self._poslist = [0]*5
         
     def read_encoder(self):
         """!@brief          Retrieves the overall position of the encoder.
@@ -60,11 +62,12 @@ class encoder:
                 self.count -= self.delta + 0xFFFF
         else:
             self.count -= self.delta
-            
-        self.poslist.pop(0)
-        self.poslist.append(self.count)
-        self.timelist.pop(0)
-        self.timelist.append(time.ticks_us())
+        
+        # Append the position and time lists as necessary.
+        self._poslist.pop(0)
+        self._poslist.append(self.count)
+        self._timelist.pop(0)
+        self._timelist.append(time.ticks_us())
         
         self.prev = self.current
         return self.count
@@ -79,7 +82,7 @@ class encoder:
         """!@brief          Retrieves the rotational velocity of the encoder.
             @return         The rotational velocity of the encoder in ticks/second.
         """
-        omega = (self.poslist[0]-self.poslist[4])/(time.ticks_diff(self.timelist[0], self.timelist[4])/1000000)
+        omega = (self._poslist[0]-self._poslist[4])/(time.ticks_diff(self._timelist[0], self._timelist[4])/1000000)
         return omega
     
     def read_Velrad(self):
@@ -99,7 +102,6 @@ if __name__ == "__main__":
     #my_encoder = encoder(pyb.Pin.board.PB6, pyb.Pin.board.PB7, 4)
     my_encoder = encoder(pyb.Pin.board.PC6, pyb.Pin.board.PC7, 8)
     my_encoder.zero()
-    N = 16
     while True:
         for n in range(100):
             my_encoder.read_encoder()

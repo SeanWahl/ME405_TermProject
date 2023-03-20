@@ -141,11 +141,14 @@ class MLX_Cam:
     
     def get_hot_column(self, array):
         """!
-        @brief   Show a data array from the IR image as ASCII art.
-        @details Each character is repeated twice so the image isn't squished
-                 laterally. A code of "><" indicates an error, probably caused
-                 by a bad pixel in the camera. 
+        @brief   Calculate which column in the camera has the highest average value.
+        @details For use with the nerf turret, this function will calculate which
+                 column the opponent is likely in by adding up the pixel values for
+                 the top half of the camera's image. This is because with the camera
+                 on the table, the person shall only be visible in the top half or
+                 so of rows.
         @param   array The array to be shown, probably @c image.v_ir
+        @return  maxIdx The hottest column, 0-31.
         """
         scale = len(MLX_Cam.asc) / (max(array) - min(array))
         offset = -min(array)

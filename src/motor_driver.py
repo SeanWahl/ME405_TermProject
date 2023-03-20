@@ -1,4 +1,4 @@
-"""!@file motor_driver.py
+"""!@file   motor_driver.py
 @brief      Documents the motor driver class for ME 405.
 @details    Contains the "motor driver" class that can be used to set up motors
             that will be used in future labs. Motors can be enabled/disabled and
@@ -9,6 +9,7 @@
 @date       January 31, 2023
 """
 
+# Import necessary modules.
 import time, pyb
 
 class MotorDriver:

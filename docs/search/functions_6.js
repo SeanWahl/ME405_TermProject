@@ -1,6 +1,8 @@
 var searchData=
 [
-  ['get_0',['get',['../classtask__share_1_1_queue.html#af2aef1dd3eed21c4b6c2e601cb8497d4',1,'task_share.Queue.get()'],['../classtask__share_1_1_share.html#a599cd89ed1cd79af8795a51d8de70d27',1,'task_share.Share.get()']]],
-  ['get_5ftrace_1',['get_trace',['../classcotask_1_1_task.html#a6e51a228f985aec8c752bd72a73730ae',1,'cotask::Task']]],
-  ['go_2',['go',['../classcotask_1_1_task.html#a78e74d18a5ba94074c2b5309394409a5',1,'cotask::Task']]]
+  ['read_5fencoder_0',['read_encoder',['../classencoder__reader_1_1encoder.html#af9424ebc5f9dcf4a39b3ed75c09be040',1,'encoder_reader::encoder']]],
+  ['read_5fomega_1',['read_omega',['../classencoder__reader_1_1encoder.html#a1b6a783c104df08025930bfc21051cca',1,'encoder_reader::encoder']]],
+  ['read_5fposrad_2',['read_Posrad',['../classencoder__reader_1_1encoder.html#adf105a6e9918ff5559cf8ab0ebee2b9c',1,'encoder_reader::encoder']]],
+  ['read_5fvelrad_3',['read_Velrad',['../classencoder__reader_1_1encoder.html#a8ad73b2dce8d23967fef6708d8e0987f',1,'encoder_reader::encoder']]],
+  ['run_4',['run',['../classcontroller_1_1_c_l_controller.html#af4cb1157e5b48f29d8f921be2b8a10f7',1,'controller::CLController']]]
 ];

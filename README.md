@@ -42,7 +42,7 @@ motor (pitch) to give the system its two degrees of freedom; the intitialization
 nerf gun itself is operated through a "hotwiring" approach, with the its two systems, flywheel and dart push mechanisms, wired to an attached bread board. The board 
 contains relays, resistors, and mosfets to apply a set amount of voltage to the gun from the Nucleo GPIO pins. 
 
-![Electronics](./images/Electronics.jpeg)
+![Electronics](./images/Electrical.jpeg)
 
 Figure 5.3. Electrical Assembly
 

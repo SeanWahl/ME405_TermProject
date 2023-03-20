@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.6"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>ME 405 Term Project: Main Page</title>
+<title>ME 405 Term Project: ME 405 Term Project</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -89,10 +89,47 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 </div>
 </div>
 
-<div class="header">
-  <div class="headertitle"><div class="title">ME 405 Term Project Documentation</div></div>
+<div><div class="header">
+  <div class="headertitle"><div class="title">ME 405 Term Project </div></div>
 </div><!--header-->
 <div class="contents">
+<div class="textblock"><h1><a class="anchor" id="desc"></a>
+Overview</h1>
+<p>In this project, we were tasked with building a 2-DOF nerf sentry turret. This entailed creating a structure that was capable of holding a projectile launcher (nerf gun) and moving it about the conventional yaw and pitch axes.</p>
+<p>Over the course of several weeks, we constructed the following device.</p>
+<div class="image">
+<img src="Turret.jpeg" alt="" width="400" height="500"/>
+</div>
+<p>This turret is capable of all project requirements and worked well in practice. Our one fatal error was human negligence (we forgot to load the gun in the final round of the competition).</p>
+<p>All code that will be referenced in this portfolio is accessible through <a href="https://github.com/SeanWahl/ME405_TermProject">https://github.com/SeanWahl/ME405_TermProject</a> . However, you may find it more useful to read through the documentation found here first, as it will be formatted better than just a python file.</p>
+<h1><a class="anchor" id="files"></a>
+Necessary Files</h1>
+<p>In order to be able to use the nerf turret, you will need 6 files along with a few support files. These files are listed below with a short description.</p>
+<p><a class="el" href="encoder__reader_8py.html" title="Documents the encoder class for ME 405.">encoder_reader.py</a> - Sets up an encoder to interface with its associated motor. Allows for angular position and velocity readings if updated frequently enough.</p>
+<p><a class="el" href="motor__driver_8py.html" title="Documents the motor driver class for ME 405.">motor_driver.py</a> - Sets up a motor to have a duty cycle applied. Allows for the motor to be enabled or disabled as well.</p>
+<p><a class="el" href="controller_8py.html" title="Documents the controller class for ME 405.">controller.py</a> - Sets up a closed loop controller. Allows for proportional and derivated control. An example use case of this would be using an encoder's readings to calculate a duty cycle for a motor in order to control its position.</p>
+<p><a class="el" href="nerf_8py.html" title="Documents the nerf gun class for ME 405.">nerf.py</a> - Sets up a nerf gun object. Allows for arming and disarming of the gun's flywheels, and also allows for shooting a dart but only if the gun is armed.</p>
+<p><a class="el" href="mlx__cam_8py.html" title="RAW VERSION This version uses a stripped down MLX90640 driver which produces only raw data,...">mlx_cam.py</a> - Sets up a camera object. The MLX 90640 is capable of taking thermal pictures with dimensions of 32x24 pixels. The actual set up of this camera is outside the scope of the class, and the files presented in mlx90640 had been provided to us. We added one function to this file in order to calculate which column of the camera had the hottest readings.</p>
+<p><a class="el" href="main_8py.html" title="Controls the nerf turret.">main.py</a> - Utilizes all files previously listed to set up our nerf turret. Periodically runs one of three tasks in our own task-based structure that allows for running tasks with variable periods. Please see the section below for more details on the structure of the file.</p>
+<h1><a class="anchor" id="states"></a>
+Task and State Diagrams</h1>
+<p>In lieu of using the instructor provided task files, we created our own task based structure in a python file. This is technically only one task, though it allows for variable periods in our tasks and eliminates problems we were running into with the instructor's files in which the tasks caused massive delays if they weren't being run on time. It was guaranteed that they would not run on time because the camera uses blocking code to take the picture. The proper overall state transition diagram for our system is as follows:</p>
+<div class="image">
+<img src="STD.jpg" alt="" width="900"/>
+</div>
+<p>Though <a class="el" href="main_8py.html" title="Controls the nerf turret.">main.py</a> technically only has one task, the states present in it represent tasks in themselves. We can make a psuedo-task diagram to understand their relationships.</p>
+<div class="image">
+<img src="psuedoTasks.jpg" alt="" width="550"/>
+</div>
+<p>By using this structure, we are essentially setting flags for when the camera and nerf tasks should run. We think that setting periods in the traditional task structure could work, though we are unsure why cotask was giving us issues with running tasks on time. We believe it is becuase the camera would take around 500ms to take a picture, stalling the code during this time and then rushing to make up other tasks afterwards.</p>
+<p>Our approach worked well for the assignment at hand, especially with the dynamic series of events that needed to take place for the duel. After an initial picture is taken, we turn around and wait the 5 seconds until the target stops moving. Then, we take another picture, aim for 500ms, and fire. This cycle goes on until a maximum number of shots is reached, at which the gun will track the target without shooting. At any point the program can be exited with a Ctrl-C or button press on the Nucleo.</p>
+<dl class="section author"><dt>Author</dt><dd>Nathan Dodd </dd>
+<dd>
+Lewis Kanagy </dd>
+<dd>
+Sean Wahl</dd></dl>
+<dl class="section date"><dt>Date</dt><dd>March 20, 2023 </dd></dl>
+</div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

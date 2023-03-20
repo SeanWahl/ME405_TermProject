@@ -11,8 +11,7 @@
 @date       February 7, 2023
 """
 
-# Import necessary modules for the testing section.
-from mlx_cam import MLX_Cam
+# Import necessary modules.
 from motor_driver import MotorDriver
 from encoder_reader import encoder
 import utime, pyb, math
@@ -48,7 +47,7 @@ class CLController:
         """!@brief		    Calculates the actuation signal based on the error of
                             the measured reading from the setpoint.
             @param  ActPos  The actual, measured position reading from a device
-            @param  ActOme  The actual, measured velocity reading from a device
+            @param  ActVel  The actual, measured velocity reading from a device
             @return         The actuation signal necessary to drive the measured
                             signal towards the setpoint.
         """

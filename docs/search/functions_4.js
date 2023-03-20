@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['empty_0',['empty',['../classtask__share_1_1_queue.html#af9ada059fc09a44adc9084901e2f7266',1,'task_share::Queue']]],
-  ['enable_1',['enable',['../classmotor__driver_1_1_motor_driver.html#a63b10626ef7cb4e9f2a84f6e659c196c',1,'motor_driver::MotorDriver']]]
+  ['get_5fcsv_0',['get_csv',['../classmlx__cam_1_1_m_l_x___cam.html#ae2adf74abddcae23d14424f52548359f',1,'mlx_cam::MLX_Cam']]],
+  ['get_5fhot_5fcolumn_1',['get_hot_column',['../classmlx__cam_1_1_m_l_x___cam.html#a044c16e473ffd1da24366e4d6a08c834',1,'mlx_cam::MLX_Cam']]],
+  ['get_5fimage_2',['get_image',['../classmlx__cam_1_1_m_l_x___cam.html#a8bb72d68883cd21e0b3d9559c9faa1dd',1,'mlx_cam::MLX_Cam']]]
 ];

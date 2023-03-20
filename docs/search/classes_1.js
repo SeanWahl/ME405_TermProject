@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['clcontroller_0',['CLController',['../classcontroller_1_1_c_l_controller.html',1,'controller']]]
+  ['encoder_0',['encoder',['../classencoder__reader_1_1encoder.html',1,'encoder_reader']]]
 ];
