@@ -86,15 +86,3 @@ Should further testing and design take place on this specific assembly, a useful
 upon the dueling date, a clear, robust wiring setup could not be formed. Further research could also be done to use a different MCU running C/C++ code, as this seemed succesful for 
 other groups in allowing for up to 60 captures / second; the software/hardware used permitted for roughly 1 capture/second. Further research could prove a useful project for one
 interested in any robotics, mechanical design, or thermal camera applications. 
-
-## State Transition Diagrams
-
-# Need to add main FSM
-
-![Task Diagram](./images/controller_motor_states.png)
-
-![Task Diagram](./images/encoder_states.png)
-
-![Task Diagram](./images/nerf_states.png)
-
-![Task Diagram](./images/camera_states.png)
